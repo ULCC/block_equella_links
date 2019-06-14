@@ -20,20 +20,21 @@ $PAGE->set_heading(get_string('linksaddedit', 'block_equella_links'));
 
 require_capability('block/equella_links:manageanylinks', $context);
 
-
-
 if (!empty($action)) {
     $link = $DB->get_record('block_equella_links', array('id' => $linkid), '*', MUST_EXIST);
     if ($action == 'edit') {
-        $mform = new equella_links_edit_form($PAGE->url, false);
-        $mform->set_data(array('title'=>$link->title, 'url'=>$link->url, 'linkid'=>$link->id));
+        $mformdata = array('title' => $link->title, 'url' => $link->url, 'linkid' => $link->id, 'isadding' => false);
+        $mform = new equella_links_edit_form($PAGE->url, $mformdata);
+        $mform->set_data($mformdata);
     } else if ($action == 'delete') {
         $DB->delete_records('block_equella_links', array('id' => $linkid));
         // we are done here
         redirect($baseurl);
     }
 } else {
-    $mform = new equella_links_edit_form($PAGE->url, true);
+    $mformdata = array('isadding' => true);
+    $mform = new equella_links_edit_form($PAGE->url, $mformdata);
+    $mform->set_data($mformdata);
 }
 
 if ($mform->is_cancelled()) {
